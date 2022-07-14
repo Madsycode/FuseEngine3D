@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "includePath": [
+                "${workspaceFolder}/Engine/**",
+                "${workspaceFolder}/Editor/**",
+                "${workspaceFolder}/Runtime/**",
+                "${workspaceFolder}/Dependencies/Libraries/Includes/**"
+            ],
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "intelliSenseMode": "${default}",
+            "cppStandard": "c++17",
+            "cStandard": "c17",
+            "name": "cpp-dev"
+        }
+    ],
+    "version": 4
+}

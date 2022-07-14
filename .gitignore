@@ -1,0 +1,13 @@
+# Directories
+.vs/
+Build/
+enc_temp_folder/
+
+# Files
+dna.txt
+*.log
+*.user
+**.sln
+**.vcxproj
+**.vcxproj.user
+**.vcxproj.filters
