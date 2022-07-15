@@ -10,6 +10,8 @@
 #include <functional>
 #include <unordered_map>
 
+#include <GLFW/glfw3.h>
+
 // export api
 #ifdef FUSE_EXPORT
     #ifdef _MSC_VER
