@@ -32,6 +32,14 @@ if (WIN32)
   target_link_libraries(${PROJECT_NAME} glfw3dll)
 endif (WIN32)
 
+
+# linux
+if (UNIX)
+  find_package(glfw3 REQUIRED)
+  target_link_libraries(${PROJECT_NAME} glfw)
+endif (UNIX)
+
+
 # precompile headers
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
 
