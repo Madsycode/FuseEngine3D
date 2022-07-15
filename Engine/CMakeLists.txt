@@ -9,29 +9,11 @@ add_library(${PROJECT_NAME} ${VAR_HEADERS} ${VAR_SOURCES})
 # define export api symbol
 add_definitions(-DFUSE_EXPORT)
 
-# Windows
-if (WIN32)
-  # define path variable for libraries folder called VAR_LIBRARIES
-  set(VAR_LIBRARIES ${CMAKE_SOURCE_DIR}/Dependencies/Libraries)
+# add src directory to include paths
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-  # libraries includes folder
-  target_include_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/Includes)
-
-  # shared .lib files folder
-  target_link_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/Shared/libs)
-
-  if(${FUSE_DEBUG})  
-    # debug .lib files folder
-    target_link_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/Debug/libs)
-  else()
-    # release .lib files folder
-    target_link_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/Release/libs)
-  endif()
-
-  # link libraries
-  target_link_libraries(${PROJECT_NAME} glfw3dll)
-endif (WIN32)
-
+# precompile headers
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
 
 # linux
 if (UNIX)
@@ -39,10 +21,26 @@ if (UNIX)
   target_link_libraries(${PROJECT_NAME} glfw)
 endif (UNIX)
 
+# Windows
+if (WIN32)
+  # link libraries
+  target_link_libraries(${PROJECT_NAME} glfw3dll)  
 
-# precompile headers
-target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+  # define path variable for libraries folder called VAR_LIBRARIES
+  set(VAR_LIBRARIES ${CMAKE_SOURCE_DIR}/Dependencies/Libraries)
 
-# add src directory to include paths
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+  # libraries includes folder
+  target_include_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/Includes)
 
+  # .lib files directory
+  target_link_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/Shared/libs)
+  target_link_directories(${PROJECT_NAME} PUBLIC ${VAR_LIBRARIES}/$<CONFIGURATION>/libs)
+
+  # post-build command to copy all debug/release .dll files to the output directory
+  add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory
+   ${VAR_LIBRARIES}/$<CONFIGURATION>/bin ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+
+  # post-build command copy all shared .dll files to output directory
+  add_custom_command(TARGET ${PROJECT_NAME}  POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory
+   ${VAR_LIBRARIES}/Shared/bin ${CMAKE_BINARY_DIR}/$<CONFIGURATION>)
+endif (WIN32)
